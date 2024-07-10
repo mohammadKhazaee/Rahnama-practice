@@ -10,8 +10,8 @@ export class Vote {
 	}
 
 	submit = (): void | never => {
-		votes.push(this);
 		const targetedProposal = Proposal.find(this.proposalId);
 		targetedProposal.receiveVote();
+		votes.push(this);
 	};
 }

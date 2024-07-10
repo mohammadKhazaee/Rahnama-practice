@@ -17,8 +17,9 @@ export class Proposal {
 	}
 
 	submit = (): void | never => {
+		const targetedPlan = Plan.find(this.planId);
+		targetedPlan.acceptProposal(this.id);
 		proposals.push(this);
-		Plan.acceptProposal(this.planId, this.id);
 	};
 
 	update = (title: string, description: string): void => {
@@ -26,15 +27,16 @@ export class Proposal {
 		this.description = description;
 	};
 
-	receiveVote = (): void => {
-		this.votesCount++;
+	receiveVote = (): void | never => {
+		const plan = Plan.find(this.planId);
+		if (plan.checkVoteDeadline()) this.votesCount++;
 	};
 
 	static find = (proposalId: Proposal["id"]): Proposal | never => {
 		const foundProposal = proposals.find((p) => p.id === proposalId);
 
 		if (!foundProposal)
-			throw new ApplicationError(`couldn't find proposal`, 404);
+			throw new ApplicationError(`couldn't find the proposal`, 404);
 
 		return foundProposal;
 	};

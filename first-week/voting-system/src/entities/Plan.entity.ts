@@ -28,17 +28,36 @@ export class Plan {
 		plans.push(this);
 	};
 
-	static acceptProposal = (
-		planId: Plan["id"],
-		proposalId: Proposal["id"]
-	): void => {
-		const planIndex = plans.findIndex((plan) => plan.id === planId);
+	acceptProposal = (proposalId: Proposal["id"]): void | never => {
+		if (Date.now() > this.proposalDeadline.getTime())
+			throw new ApplicationError(
+				"proposal submition deadline has passed",
+				409
+			);
 
-		if (!plans[planIndex]) throw new ApplicationError("wrong planId", 422);
+		this.proposals = [...this.proposals, proposalId];
+	};
 
-		plans[planIndex].proposals = [
-			...plans[planIndex].proposals,
-			proposalId,
-		];
+	checkVoteDeadline = (): true | never => {
+		if (Date.now() > this.votingDeadline.getTime())
+			throw new ApplicationError(
+				"vote submition deadline has passed",
+				409
+			);
+		if (Date.now() < this.proposalDeadline.getTime())
+			throw new ApplicationError(
+				"vote submition time period will hasn't been started",
+				409
+			);
+		return true;
+	};
+
+	static find = (planId: Plan["id"]): Plan | never => {
+		const foundPlan = plans.find((p) => p.id === planId);
+
+		if (!foundPlan)
+			throw new ApplicationError(`couldn't find the plan`, 404);
+
+		return foundPlan;
 	};
 }

@@ -57,7 +57,12 @@ export const postPlan: RequestHandler = (req, res, next) => {
 	const { title, description, proposalDeadline, votingDeadline }: PlanInput =
 		req.body;
 
-	if (!title || !description || !proposalDeadline || !votingDeadline)
+	if (
+		!title ||
+		!description ||
+		proposalDeadline === undefined ||
+		votingDeadline === undefined
+	)
 		return next(new ApplicationError("input is missing", 422));
 
 	const createdPlan: Plan = new Plan(
@@ -106,7 +111,7 @@ export const patchProposal: RequestHandler = (req, res, next) => {
 	const { title, description }: ProposalUpdateInput = req.body;
 	const proposalId = req.params.proposalId;
 
-	if (!proposalId || Number.isNaN(+proposalId)) return next();
+	if (proposalId === undefined || Number.isNaN(+proposalId)) return next();
 
 	if (!title || !description)
 		return next(new ApplicationError("input is missing", 422));
@@ -121,7 +126,7 @@ export const patchProposal: RequestHandler = (req, res, next) => {
 export const postVote: RequestHandler = (req, res, next) => {
 	const { proposalId }: VoteInput = req.body;
 
-	if (!proposalId || Number.isNaN(+proposalId)) return next();
+	if (proposalId === undefined || Number.isNaN(+proposalId)) return next();
 
 	const createdVote: Vote = new Vote(proposalId);
 
