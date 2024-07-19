@@ -1,0 +1,24 @@
+###
+POST http://localhost:3000/expense
+Content-Type: application/json
+
+{
+    "userId": 2,
+    "groupId": 1,
+    "description": "poole cafe",
+    "cost": 6700000
+}
+
+
+###
+GET http://localhost:3000
+
+
+###
+# POST http://localhost:3000/login
+# Content-Type: application/json
+
+# {
+#     "username": "admin",
+#     "password": "admin"
+# }
