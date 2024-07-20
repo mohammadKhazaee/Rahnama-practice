@@ -1,9 +1,6 @@
 import { Expense } from '../../routes/expense.route';
 import { Group, groups } from '../../routes/group.route';
-import {
-    ApplicationError,
-    NotFoundError,
-} from '../../utility/Application-error';
+import { ApplicationError } from '../../utility/Application-error';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 
 export const createExpense = (dto: CreateExpenseDto) => {
