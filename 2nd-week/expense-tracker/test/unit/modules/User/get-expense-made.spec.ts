@@ -1,5 +1,5 @@
-import { Group } from '../../routes/group.route';
-import { isUserMember } from './get-expense-made';
+import { Group } from '../../../../src/routes/group.route';
+import { isUserMember } from '../../../../src/modules/User/get-expense-made';
 
 describe('Get expense made test suite', () => {
     const dummyGroupId = 1;

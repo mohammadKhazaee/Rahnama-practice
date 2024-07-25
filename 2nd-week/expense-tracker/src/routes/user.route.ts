@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { z, ZodError } from 'zod';
-import { createExpense } from '../modules/Expense/create-expense';
-import { createExpenseDto } from '../modules/Expense/dto/create-expense.dto';
 import { ApplicationError } from '../utility/Application-error';
-import { getExpenseMade } from '../modules/User/get-expense-made';
+import {
+    getExpenseMade,
+    getExpenseReceived,
+} from '../modules/User/get-expense-made';
+import { getExpenseDto } from '../modules/User/dto/get-expense.dto';
+import { groups } from './group.route';
 
 export type User = {
     id: number;
@@ -27,12 +30,11 @@ export const users: User[] = [
 
 export const app = Router();
 
-app.get('/users/:userId/groups/:groupId/expenses/made', (req, res) => {
+app.get('/:userId/groups/:groupId/expenses/made', (req, res) => {
     try {
-        const userId = z.coerce.number().parse(req.params.userId);
-        const groupId = z.coerce.number().parse(req.params.groupId);
+        const dto = getExpenseDto.parse(req.params);
 
-        const expenses = getExpenseMade(groupId, userId);
+        const expenses = getExpenseMade(dto);
 
         res.status(200).send(expenses);
     } catch (error) {
@@ -42,4 +44,16 @@ app.get('/users/:userId/groups/:groupId/expenses/made', (req, res) => {
     }
 });
 
-app.get('/users/:userId/groups/:groupId/expenses/received', (req, res) => {});
+app.get('/:userId/groups/:groupId/expenses/received', (req, res) => {
+    try {
+        const dto = getExpenseDto.parse(req.params);
+
+        const expenses = getExpenseReceived(dto);
+
+        res.status(200).send(expenses);
+    } catch (error) {
+        if (error instanceof ZodError) res.status(400).send(error.errors);
+        if (error instanceof ApplicationError)
+            res.status(error.statusCode).send(error.message);
+    }
+});

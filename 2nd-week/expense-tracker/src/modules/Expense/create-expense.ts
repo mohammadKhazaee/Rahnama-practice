@@ -5,14 +5,16 @@ import { CreateExpenseDto } from './dto/create-expense.dto';
 
 export const createExpense = (dto: CreateExpenseDto) => {
     if (isExpensePossible(dto, groups)) {
+        const group = groups.find((g) => g.id === dto.groupId)!;
+
         const expense: Expense = {
-            id: 1,
+            id: group.expenses.length + 1,
             userId: dto.userId,
             groupId: dto.groupId,
             description: dto.description || '',
             cost: dto.cost,
         };
-        const group = groups.find((g) => g.id === dto.groupId)!;
+
         group.expenses.push(expense);
         return expense;
     }

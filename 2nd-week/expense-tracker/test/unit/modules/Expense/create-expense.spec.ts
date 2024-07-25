@@ -1,5 +1,5 @@
-import { Group } from '../../routes/group.route';
-import { isExpensePossible } from './create-expense';
+import { Group } from '../../../../src/routes/group.route';
+import { isExpensePossible } from '../../../../src/modules/Expense/create-expense';
 
 describe('Create expense test suite', () => {
     it('should fail if user is not one of the group members', () => {
