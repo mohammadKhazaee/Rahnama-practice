@@ -37,7 +37,7 @@ export const groups: Group[] = [
 
 export const app = Router();
 
-app.get('/groups/:groupId/settlements', (req, res) => {
+app.get('/:groupId/settlements', (req, res) => {
     try {
         const groupId = z.coerce.number().parse(req.params.groupId);
 

@@ -14,7 +14,7 @@ describe('Group module test suite', () => {
         await createExpenseTest({ groupId, userId: 3, cost: 300 }, 201);
 
         const { body: settlements } = await request(app)
-            .get(`/group/${groupId}/settlements`)
+            .get(`/groups/${groupId}/settlements`)
             .expect(200);
 
         const expexted: Settlement[] = [
@@ -34,6 +34,6 @@ describe('Group module test suite', () => {
 
     it('should fail groupId is not in database', async () => {
         const groupId = Infinity;
-        await request(app).get(`/group/${groupId}/settlements`).expect(404);
+        await request(app).get(`/groups/${groupId}/settlements`).expect(404);
     });
 });
