@@ -1,29 +1,19 @@
-import { Router } from 'express';
-import { ZodError } from 'zod';
+import { Request, Response } from 'express';
 import { createExpenseDto } from '../modules/Expense/dto/create-expense.dto';
-import { ApplicationError } from '../utility/Application-error';
-import { createExpense } from '../modules/Expense/create-expense';
+import { ExpenseService } from '../modules/Expense/expense.service';
+import { BaseRouter } from '../types/BaseRouter.base';
 
-export type Expense = {
-    id: number;
-    userId: number;
-    groupId: number;
-    description: string;
-    cost: number;
-};
+export class ExpenseRouter extends BaseRouter {
+    constructor(private expenseService: ExpenseService) {
+        super();
+        this.app.post('/', this.postCreateExpense);
+    }
 
-export const app = Router();
-
-app.post('/', (req, res) => {
-    try {
+    private postCreateExpense = (req: Request, res: Response) => {
         const dto = createExpenseDto.parse(req.body);
 
-        const expense = createExpense(dto);
+        const expense = this.expenseService.createExpense(dto);
 
         res.status(201).send(expense);
-    } catch (error) {
-        if (error instanceof ZodError) res.status(400).send(error.errors);
-        if (error instanceof ApplicationError)
-            res.status(error.statusCode).send(error.message);
-    }
-});
+    };
+}

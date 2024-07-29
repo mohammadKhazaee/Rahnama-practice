@@ -1,5 +1,5 @@
-import { Group } from '../../../../src/routes/group.route';
-import { isUserMember } from '../../../../src/modules/User/get-expense-made';
+import { userService } from '../../../../src/dependency';
+import { Group } from '../../../../src/modules/Group/model/group.model';
 
 describe('Get expense made test suite', () => {
     const dummyGroupId = 1;
@@ -8,7 +8,11 @@ describe('Get expense made test suite', () => {
         const dummyGroups: Group[] = [];
 
         expect(
-            isUserMember(dummyGroups, dummyGroupId, expect.any(Number))
+            userService.isUserMember(
+                dummyGroups,
+                dummyGroupId,
+                expect.any(Number)
+            )
         ).toBe(false);
     });
 
@@ -23,7 +27,11 @@ describe('Get expense made test suite', () => {
         ];
 
         expect(
-            isUserMember(dummyGroups, dummyGroupId, expect.any(Number))
+            userService.isUserMember(
+                dummyGroups,
+                dummyGroupId,
+                expect.any(Number)
+            )
         ).toBe(false);
     });
 
@@ -31,20 +39,13 @@ describe('Get expense made test suite', () => {
         const dummyGroups: Group[] = [
             {
                 id: 1,
-                users: [
-                    {
-                        id: 1,
-                        name: 'ali',
-                    },
-                    {
-                        id: 2,
-                        name: 'sara',
-                    },
-                ],
+                users: [1, 2],
                 expenses: [],
             },
         ];
 
-        expect(isUserMember(dummyGroups, dummyGroupId, 2)).toBe(true);
+        expect(userService.isUserMember(dummyGroups, dummyGroupId, 2)).toBe(
+            true
+        );
     });
 });

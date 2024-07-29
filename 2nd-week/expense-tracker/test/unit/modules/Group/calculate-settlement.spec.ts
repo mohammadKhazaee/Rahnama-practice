@@ -1,18 +1,18 @@
-import {
-    calculate,
-    calculateSettlement,
-} from '../../../../src/modules/Group/calculate-settlement';
-import { Group, Settlement } from '../../../../src/routes/group.route';
+import { Settlement } from '../../../../src/routes/group.route';
 import { NotFoundError } from '../../../../src/utility/Application-error';
+import { Group } from '../../../../src/modules/Group/model/group.model';
+import { groupService } from '../../../../src/dependency';
 
 describe('Calculate settlement test suite', () => {
     it('should fail if group with given id doesnt exists', () => {
-        expect(() => calculateSettlement(Infinity)).toThrow(NotFoundError);
+        expect(() => groupService.calculateSettlement(Infinity)).toThrow(
+            NotFoundError
+        );
     });
 
-    it('should fail if user is not one of the group members', () => {
+    it('should get an array of settlements', () => {
         const dummyGroup: Group = {
-            users: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
+            users: [1, 2, 3, 4],
             expenses: [
                 { userId: 1, cost: 200 },
                 { userId: 2, cost: 800 },
@@ -28,6 +28,6 @@ describe('Calculate settlement test suite', () => {
             { debtorId: 3, creditorId: 4, amount: 125 },
         ];
 
-        expect(calculate(dummyGroup)).toEqual(expexted);
+        expect(groupService.calculate(dummyGroup)).toEqual(expexted);
     });
 });

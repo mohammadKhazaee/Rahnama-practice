@@ -27,7 +27,7 @@ describe('Expense module test suite', () => {
 
     it('should fail if user is not one of group members', async () => {
         validExpense.userId = 1;
-        await createExpenseTest(validExpense, 400);
+        await createExpenseTest(validExpense, 409);
     });
 
     it('should fail for incomplete request body', async () => {

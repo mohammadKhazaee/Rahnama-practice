@@ -1,17 +1,19 @@
 import request from 'supertest';
 import { app } from '../../src/api';
 import { createExpenseTest } from './utility';
-import { groups } from '../../src/routes/group.route';
+import { dbs } from '../../src/databases/instances';
 
 describe('User module test suite', () => {
+    beforeEach(() => {
+        dbs.expenses.destroyAll();
+    });
+
     describe('Get expense made route', () => {
         it('should only get expenses made by user', async () => {
             const groupId = 2,
                 userId = 2;
             const userExpense = { groupId, userId, cost: 300 };
             const groupExpense = { groupId, userId: 1, cost: 300 };
-
-            groups[groupId - 1].expenses = [];
 
             await createExpenseTest(groupExpense, 201);
             await createExpenseTest(userExpense, 201);
@@ -40,7 +42,7 @@ describe('User module test suite', () => {
                 userId = 2;
             await request(app)
                 .get(`/users/${userId}/groups/${groupId}/expenses/made`)
-                .expect(400);
+                .expect(404);
         });
 
         it('should fail userId is not in database', async () => {
@@ -48,7 +50,7 @@ describe('User module test suite', () => {
                 groupId = 1;
             await request(app)
                 .get(`/users/${userId}/groups/${groupId}/expenses/made`)
-                .expect(400);
+                .expect(409);
         });
 
         it('should fail if user is not one of group members', async () => {
@@ -56,7 +58,7 @@ describe('User module test suite', () => {
                 groupId = 1;
             await request(app)
                 .get(`/users/${userId}/groups/${groupId}/expenses/made`)
-                .expect(400);
+                .expect(409);
         });
 
         it('should fail if userId is not number', async () => {
@@ -82,8 +84,6 @@ describe('User module test suite', () => {
                 userId = 2;
             const userExpense = { groupId, userId, cost: 300 };
             const groupExpense = { groupId, userId: 1, cost: 300 };
-
-            groups[groupId - 1].expenses = [];
 
             await createExpenseTest(userExpense, 201);
             await createExpenseTest(groupExpense, 201);
@@ -112,7 +112,7 @@ describe('User module test suite', () => {
                 userId = 2;
             await request(app)
                 .get(`/users/${userId}/groups/${groupId}/expenses/made`)
-                .expect(400);
+                .expect(404);
         });
 
         it('should fail userId is not in database', async () => {
@@ -120,7 +120,7 @@ describe('User module test suite', () => {
                 groupId = 1;
             await request(app)
                 .get(`/users/${userId}/groups/${groupId}/expenses/made`)
-                .expect(400);
+                .expect(409);
         });
 
         it('should fail if user is not one of group members', async () => {
@@ -128,7 +128,7 @@ describe('User module test suite', () => {
                 groupId = 1;
             await request(app)
                 .get(`/users/${userId}/groups/${groupId}/expenses/made`)
-                .expect(400);
+                .expect(409);
         });
 
         it('should fail if userId is not number', async () => {

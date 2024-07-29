@@ -1,5 +1,5 @@
-import { Group } from '../../../../src/routes/group.route';
-import { isExpensePossible } from '../../../../src/modules/Expense/create-expense';
+import { expenseService } from '../../../../src/dependency';
+import { Group } from '../../../../src/modules/Group/model/group.model';
 
 describe('Create expense test suite', () => {
     it('should fail if user is not one of the group members', () => {
@@ -12,7 +12,7 @@ describe('Create expense test suite', () => {
         ];
 
         expect(
-            isExpensePossible(
+            expenseService.isExpensePossible(
                 {
                     userId: 1,
                     groupId: 1,
@@ -27,7 +27,7 @@ describe('Create expense test suite', () => {
         const dummyGroups: Group[] = [];
 
         expect(
-            isExpensePossible(
+            expenseService.isExpensePossible(
                 {
                     userId: 1,
                     groupId: 1,
@@ -42,22 +42,13 @@ describe('Create expense test suite', () => {
         const dummyGroups: Group[] = [
             {
                 id: 1,
-                users: [
-                    {
-                        id: 1,
-                        name: 'ali',
-                    },
-                    {
-                        id: 2,
-                        name: 'sara',
-                    },
-                ],
+                users: [1, 2],
                 expenses: [],
             },
         ];
 
         expect(
-            isExpensePossible(
+            expenseService.isExpensePossible(
                 {
                     userId: 1,
                     groupId: 1,

@@ -4,11 +4,13 @@ Content-Type: application/json
 
 {
     "userId": 2,
-    "groupId": 1,
+    "groupId": 2,
     "description": "poole cafe",
     "cost": 6700000
 }
 
+###
+GET http://localhost:3000/users/1/groups/2/expenses/made
 
 ###
 GET http://localhost:3000

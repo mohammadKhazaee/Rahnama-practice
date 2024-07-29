@@ -1,59 +1,35 @@
-import { Router } from 'express';
-import { z, ZodError } from 'zod';
-import { ApplicationError } from '../utility/Application-error';
-import {
-    getExpenseMade,
-    getExpenseReceived,
-} from '../modules/User/get-expense-made';
+import { Handler, Router } from 'express';
 import { getExpenseDto } from '../modules/User/dto/get-expense.dto';
-import { groups } from './group.route';
+import { UserService } from '../modules/User/user.service';
+import { BaseRouter } from '../types/BaseRouter.base';
 
-export type User = {
-    id: number;
-    name: string;
-};
+export class UserRouter extends BaseRouter {
+    constructor(private userService: UserService) {
+        super();
+        this.app.get(
+            '/:userId/groups/:groupId/expenses/made',
+            this.getExpenseMade
+        );
 
-export const users: User[] = [
-    {
-        id: 1,
-        name: 'ali',
-    },
-    {
-        id: 2,
-        name: 'hasan',
-    },
-    { id: 3, name: 'parisa' },
-    { id: 4, name: 'mohammad ali' },
-    { id: 5, name: 'yalda' },
-    { id: 6, name: 'shayan' },
-];
+        this.app.get(
+            '/:userId/groups/:groupId/expenses/received',
+            this.getExpenseReceived
+        );
+    }
 
-export const app = Router();
-
-app.get('/:userId/groups/:groupId/expenses/made', (req, res) => {
-    try {
+    private getExpenseMade: Handler = (req, res) => {
         const dto = getExpenseDto.parse(req.params);
 
-        const expenses = getExpenseMade(dto);
+        const expenses = this.userService.getExpenseMade(dto);
 
         res.status(200).send(expenses);
-    } catch (error) {
-        if (error instanceof ZodError) res.status(400).send(error.errors);
-        if (error instanceof ApplicationError)
-            res.status(error.statusCode).send(error.message);
-    }
-});
+    };
 
-app.get('/:userId/groups/:groupId/expenses/received', (req, res) => {
-    try {
+    private getExpenseReceived: Handler = (req, res) => {
         const dto = getExpenseDto.parse(req.params);
 
-        const expenses = getExpenseReceived(dto);
+        const expenses = this.userService.getExpenseReceived(dto);
 
         res.status(200).send(expenses);
-    } catch (error) {
-        if (error instanceof ZodError) res.status(400).send(error.errors);
-        if (error instanceof ApplicationError)
-            res.status(error.statusCode).send(error.message);
-    }
-});
+    };
+}

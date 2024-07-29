@@ -15,3 +15,9 @@ export class NotFoundError extends ApplicationError {
         super(404, message || 'Not Found');
     }
 }
+
+export class ConflictError extends ApplicationError {
+    constructor(message?: string) {
+        super(409, message || 'Not Found');
+    }
+}
