@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { createExpenseDto } from '../modules/Expense/dto/create-expense.dto';
-import { ExpenseService } from '../modules/Expense/expense.service';
+import { IExpenseService } from '../modules/Expense/expense.service';
 import { BaseRouter } from '../types/BaseRouter.base';
 
 export class ExpenseRouter extends BaseRouter {
-    constructor(private expenseService: ExpenseService) {
+    constructor(private expenseService: IExpenseService) {
         super();
         this.app.post('/', this.postCreateExpense);
     }

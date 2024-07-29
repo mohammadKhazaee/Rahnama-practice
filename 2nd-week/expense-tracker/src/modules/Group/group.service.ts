@@ -1,11 +1,24 @@
 import { Settlement } from '../../routes/group.route';
 import { ConflictError, NotFoundError } from '../../utility/Application-error';
 import { UserId } from '../User/model/user.model';
-import { GroupRepository } from './group.repository';
+import { IGroupRepository } from './group.repository';
 import { Group, GroupId } from './model/group.model';
 
-export class GroupService {
-    constructor(private groupRepo: GroupRepository) {}
+export interface IGroupService {
+    findGroupById(groupId: number): Group | never;
+    doesGroupExist(groupId: number): boolean;
+    isUserMember({
+        userId,
+        groupId,
+    }: {
+        userId: UserId;
+        groupId: GroupId;
+    }): true | never;
+    calculateSettlement(groupId: number): Settlement[];
+}
+
+export class GroupService implements IGroupService {
+    constructor(private groupRepo: IGroupRepository) {}
 
     findGroupById(groupId: number): Group | never {
         const group = this.groupRepo.findById(groupId);
@@ -37,7 +50,7 @@ export class GroupService {
         return this.calculate(group);
     };
 
-    calculate = (group: Group): Settlement[] => {
+    private calculate = (group: Group): Settlement[] => {
         const memberCount = group.users.length;
         const totalPayedPerMember = group.expenses.reduce((result, expense) => {
             if (!result[expense.userId]) result[expense.userId] = expense.cost;

@@ -1,6 +1,6 @@
-import { Handler, Router } from 'express';
+import { Handler } from 'express';
 import { z } from 'zod';
-import { GroupService } from '../modules/Group/group.service';
+import { IGroupService } from '../modules/Group/group.service';
 import { BaseRouter } from '../types/BaseRouter.base';
 
 export type Settlement = {
@@ -9,10 +9,8 @@ export type Settlement = {
     amount: number;
 };
 
-export const app = Router();
-
 export class GroupRouter extends BaseRouter {
-    constructor(private groupService: GroupService) {
+    constructor(private groupService: IGroupService) {
         super();
         this.app.get('/:groupId/settlements', this.getSettlements);
     }

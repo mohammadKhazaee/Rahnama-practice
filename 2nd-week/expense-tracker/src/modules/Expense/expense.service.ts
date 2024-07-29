@@ -1,12 +1,22 @@
 import { CreateExpenseDto } from './dto/create-expense.dto';
-import { ExpenseRepository } from './expense.repository';
+import { IExpenseRepository } from './expense.repository';
 import { CreateExpense } from '../../databases/expense/expense.database';
-import { GroupService } from '../Group/group.service';
+import { Expense } from './model/expense.model';
+import { IGroupService } from '../Group/group.service';
 
-export class ExpenseService {
+export interface IExpenseService {
+    createExpense({
+        cost,
+        groupId,
+        userId,
+        description,
+    }: CreateExpenseDto): Expense | undefined;
+}
+
+export class ExpenseService implements IExpenseService {
     constructor(
-        private expenseRepo: ExpenseRepository,
-        private groupService: GroupService
+        private expenseRepo: IExpenseRepository,
+        private groupService: IGroupService
     ) {}
 
     createExpense = ({
@@ -14,7 +24,7 @@ export class ExpenseService {
         groupId,
         userId,
         description,
-    }: CreateExpenseDto) => {
+    }: CreateExpenseDto): Expense | undefined => {
         if (this.groupService.isUserMember({ userId, groupId })) {
             const expense: CreateExpense = {
                 userId: userId,

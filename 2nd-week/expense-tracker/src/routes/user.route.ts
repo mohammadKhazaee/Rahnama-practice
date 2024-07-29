@@ -1,10 +1,10 @@
-import { Handler, Router } from 'express';
+import { Handler } from 'express';
 import { getExpenseDto } from '../modules/User/dto/get-expense.dto';
-import { UserService } from '../modules/User/user.service';
+import { IUserService } from '../modules/User/user.service';
 import { BaseRouter } from '../types/BaseRouter.base';
 
 export class UserRouter extends BaseRouter {
-    constructor(private userService: UserService) {
+    constructor(private userService: IUserService) {
         super();
         this.app.get(
             '/:userId/groups/:groupId/expenses/made',

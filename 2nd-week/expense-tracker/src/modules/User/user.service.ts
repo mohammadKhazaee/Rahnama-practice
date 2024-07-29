@@ -1,12 +1,24 @@
-import { NotFoundError } from '../../utility/Application-error';
-import { GroupService } from '../Group/group.service';
+import {
+    ApplicationError,
+    NotFoundError,
+} from '../../utility/Application-error';
+import { Expense } from '../Expense/model/expense.model';
+import { IGroupService } from '../Group/group.service';
 import { GetExpenseDto } from './dto/get-expense.dto';
-import { UserRepository } from './user.repository';
+import { User } from './model/user.model';
+import { IUserRepository } from './user.repository';
 
-export class UserService {
+export interface IUserService {
+    doesUserExist(userId: number): boolean;
+    getExpenseMade({ groupId, userId }: GetExpenseDto): Expense[] | never;
+    getExpenseReceived({ groupId, userId }: GetExpenseDto): Expense[] | never;
+    getUserById(userId: number): User | never;
+}
+
+export class UserService implements IUserService {
     constructor(
-        private userRepo: UserRepository,
-        private groupService: GroupService
+        private userRepo: IUserRepository,
+        private groupService: IGroupService
     ) {}
 
     doesUserExist(userId: number): boolean {
@@ -22,6 +34,7 @@ export class UserService {
             );
             return expenseMade;
         }
+        throw new ApplicationError(500, 'Unexpected error');
     }
 
     getExpenseReceived({ groupId, userId }: GetExpenseDto) {
@@ -32,9 +45,10 @@ export class UserService {
             );
             return expenseMade;
         }
+        throw new ApplicationError(500, 'Unexpected error');
     }
 
-    getUserById(userId: number) {
+    getUserById(userId: number): User | never {
         const user = this.userRepo.findById(userId);
         if (!user) throw new NotFoundError("couldn't find the user");
         return user;

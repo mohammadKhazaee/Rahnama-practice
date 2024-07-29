@@ -1,9 +1,14 @@
 import { GroupUser } from '../../databases/groups-users/group-user.model';
 import { DbRepo } from '../../db-repo';
-import { User, UserId } from '../User/model/user.model';
+import { UserId } from '../User/model/user.model';
 import { Group, GroupId } from './model/group.model';
 
-export class GroupRepository {
+export interface IGroupRepository {
+    findById(groupId: number): Group | undefined;
+    doesMemberExist(groupId: GroupId, userId: UserId): boolean;
+}
+
+export class GroupRepository implements IGroupRepository {
     constructor(
         private groupRepo: DbRepo<Group>,
         private groupUserRepo: DbRepo<GroupUser>
